@@ -1,0 +1,6 @@
+{
+  "name": "Snap and Learn",
+  "description": "Mobile-first AI study tutor for university students in Kenya powered by Gemma 4 through the Gemini API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
