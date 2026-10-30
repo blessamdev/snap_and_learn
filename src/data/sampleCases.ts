@@ -346,12 +346,80 @@ const nonStudySvg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height=
   <text x="450" y="626" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="16" fill="#f8fafc">☕ Photo of Kenyan Tea (Not Study Material)</text>
 </svg>`;
 
+// 6. Calculus Problem: Quotient Rule & Critical Points
+const calculusSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <rect width="900" height="700" fill="#f8fafc" />
+  <rect x="30" y="30" width="840" height="640" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+  <!-- Title -->
+  <text x="60" y="80" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="bold" fill="#0f172a">MAT 101: Differential Calculus - Assignment 3</text>
+  <text x="60" y="115" font-family="'JetBrains Mono', monospace" font-size="16" fill="#475569">Problem: Find the derivative f'(x) and critical points of f(x) = ln(x) / x^2</text>
+  
+  <!-- Notebook lines with steps -->
+  <g transform="translate(60, 160)">
+    <rect width="780" height="460" fill="#fdfbf7" rx="8" stroke="#e2e8f0" />
+    <text x="30" y="40" font-family="'JetBrains Mono', monospace" font-size="18" fill="#1e293b">Student Working:</text>
+    <text x="30" y="85" font-family="'JetBrains Mono', monospace" font-size="18" fill="#0f172a">Step 1: Let u = ln(x) =&gt; u' = 1/x</text>
+    <text x="30" y="125" font-family="'JetBrains Mono', monospace" font-size="18" fill="#0f172a">Step 2: Let v = x^2   =&gt; v' = 2x</text>
+    
+    <text x="30" y="180" font-family="'JetBrains Mono', monospace" font-size="18" fill="#0284c7">Step 3: Quotient Rule: f'(x) = [u' * v - u * v'] / v^2</text>
+    <text x="30" y="230" font-family="'JetBrains Mono', monospace" font-size="18" fill="#0f172a">Step 4: f'(x) = [(1/x)*(x^2) - (ln x)*(2x)] / (x^2)^2</text>
+    <text x="30" y="275" font-family="'JetBrains Mono', monospace" font-size="18" fill="#0f172a">Step 5: f'(x) = [x - 2x ln(x)] / x^4</text>
+    <text x="30" y="320" font-family="'JetBrains Mono', monospace" font-size="18" fill="#0f172a">Step 6: f'(x) = x [1 - 2 ln(x)] / x^4 = [1 - 2 ln(x)] / x^3</text>
+
+    <!-- Critical point draft -->
+    <rect x="25" y="350" width="730" height="85" fill="#fef3c7" rx="6" stroke="#f59e0b" />
+    <text x="40" y="385" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="bold" fill="#92400e">Find Critical Point where f'(x) = 0:</text>
+    <text x="40" y="415" font-family="'JetBrains Mono', monospace" font-size="16" fill="#78350f">1 - 2 ln(x) = 0 =&gt; ln(x) = 1/2 =&gt; x = e^(1/2) = &#8730;e</text>
+  </g>
+</svg>`;
+
+// 7. Economics Equilibrium Graph
+const economicsSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <rect width="900" height="700" fill="#ffffff" />
+  <rect x="25" y="25" width="850" height="650" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2" />
+  <text x="60" y="70" font-family="'JetBrains Mono', monospace" font-size="22" font-weight="bold" fill="#0f172a">ECO 101: Principles of Microeconomics</text>
+  <text x="60" y="100" font-family="'JetBrains Mono', monospace" font-size="16" fill="#475569">Topic: Market Equilibrium &amp; Tax Incidence (Price vs. Quantity)</text>
+
+  <!-- Coordinate Axes -->
+  <g transform="translate(120, 160)">
+    <!-- Y-axis (Price) -->
+    <line x1="60" y1="420" x2="60" y2="40" stroke="#0f172a" stroke-width="3" />
+    <polygon points="60,30 54,45 66,45" fill="#0f172a" />
+    <text x="15" y="45" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="bold" fill="#0f172a">Price (P)</text>
+
+    <!-- X-axis (Quantity) -->
+    <line x1="60" y1="420" x2="680" y2="420" stroke="#0f172a" stroke-width="3" />
+    <polygon points="690,420 675,414 675,426" fill="#0f172a" />
+    <text x="590" y="450" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="bold" fill="#0f172a">Quantity (Q)</text>
+
+    <!-- Supply Curve (Upward sloping) -->
+    <line x1="120" y1="360" x2="560" y2="100" stroke="#0d9488" stroke-width="3.5" />
+    <text x="575" y="105" font-family="'JetBrains Mono', monospace" font-size="19" font-weight="bold" fill="#0d9488">Supply (S)</text>
+
+    <!-- Demand Curve (Downward sloping) -->
+    <line x1="120" y1="100" x2="560" y2="360" stroke="#f43f5e" stroke-width="3.5" />
+    <text x="575" y="365" font-family="'JetBrains Mono', monospace" font-size="19" font-weight="bold" fill="#f43f5e">Demand (D)</text>
+
+    <!-- Equilibrium Point E (Intersection at 340, 230) -->
+    <circle cx="340" cy="230" r="7" fill="#0284c7" />
+    <text x="355" y="225" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="bold" fill="#0284c7">Equilibrium E*</text>
+
+    <!-- Dashed lines to axes -->
+    <line x1="60" y1="230" x2="340" y2="230" stroke="#0284c7" stroke-width="2" stroke-dasharray="6,4" />
+    <line x1="340" y1="230" x2="340" y2="420" stroke="#0284c7" stroke-width="2" stroke-dasharray="6,4" />
+
+    <text x="15" y="235" font-family="'JetBrains Mono', monospace" font-size="17" font-weight="bold" fill="#0284c7">P* = $40</text>
+    <text x="315" y="445" font-family="'JetBrains Mono', monospace" font-size="17" font-weight="bold" fill="#0284c7">Q* = 100</text>
+  </g>
+</svg>`;
+
 export const SAMPLE_TEST_CASES: SampleTestCase[] = [
   {
     id: 'kmap',
     title: '4-Variable Karnaugh Map',
     subtitle: 'Computational Logic • Corner Wrap Error',
     category: 'Computational Logic',
+    subjectCategory: 'cs',
     recommendedMode: 'check',
     suggestedQuestion: 'Check my K-map simplification for F(A,B,C,D). Did I group the 1s correctly?',
     expectedBehavior: 'Identifies the 4-variable K-map, validates the central quad (BD), detects the mistake with corners (grouped as 2 pairs instead of 4-corner group B\'D\'), explains why corner adjacency works, gives a hint, and shows corrected step.',
@@ -362,6 +430,7 @@ export const SAMPLE_TEST_CASES: SampleTestCase[] = [
     title: 'C Pointer Segmentation Fault',
     subtitle: 'C Programming • Uninitialized Pointer Crash',
     category: 'C Programming',
+    subjectCategory: 'cs',
     recommendedMode: 'explain',
     suggestedQuestion: 'Why is my C code crashing with Segmentation fault when calling strcpy?',
     expectedBehavior: 'Reads the C code and gcc warning. Explains that char *campus_name is an uninitialized wild pointer holding an arbitrary memory address, so strcpy attempts to write into protected memory. Shows corrected code using char campus_name[50] or malloc.',
@@ -372,16 +441,40 @@ export const SAMPLE_TEST_CASES: SampleTestCase[] = [
     title: 'Two-Loop Kirchhoff Circuit',
     subtitle: 'Physics 102 • KVL Mesh Equations',
     category: 'Introductory Physics',
+    subjectCategory: 'engineering',
     recommendedMode: 'quiz',
     suggestedQuestion: 'Quiz me on Kirchhoff\'s laws and how the loop currents interact across R2.',
     expectedBehavior: 'Generates 3 interactive multiple-choice questions testing KVL mesh analysis, sign conventions for voltage sources, and junction current equations across R2. Provides explanations for correct and wrong choices.',
     imageDataUrl: svgToDataUrl(kirchhoffSvg),
   },
   {
+    id: 'calculus',
+    title: 'Calculus Derivative & Critical Points',
+    subtitle: 'Mathematics • Quotient Rule Derivation',
+    category: 'Calculus & Analysis',
+    subjectCategory: 'math_physics',
+    recommendedMode: 'explain',
+    suggestedQuestion: 'Explain the step-by-step differentiation and critical point calculation.',
+    expectedBehavior: 'Explains the quotient rule, logarithmic derivative d/dx[ln x] = 1/x, power rule, and critical point definition f\'(x) = 0.',
+    imageDataUrl: svgToDataUrl(calculusSvg),
+  },
+  {
+    id: 'economics',
+    title: 'Market Equilibrium Graph',
+    subtitle: 'Microeconomics • Supply & Demand Curve',
+    category: 'Economics & Business',
+    subjectCategory: 'business_econ',
+    recommendedMode: 'quiz',
+    suggestedQuestion: 'Quiz me on market equilibrium and consumer surplus from this graph.',
+    expectedBehavior: 'Analyzes the equilibrium price P*=40 and Q*=100, then generates 3 multiple-choice questions on supply, demand, and equilibrium.',
+    imageDataUrl: svgToDataUrl(economicsSvg),
+  },
+  {
     id: 'blurry',
     title: 'Blurry Motion-Blurred Photo',
     subtitle: 'Quality Guardrail • Readable = False',
     category: 'Quality Check',
+    subjectCategory: 'general',
     recommendedMode: 'explain',
     suggestedQuestion: 'Can you read and explain my formulas?',
     expectedBehavior: 'Returns readable: false. Politely states in 1-2 sentences that the handwriting is motion-blurred and illegible. Refuses to invent formulas or hallucinate content, asking the student to take a steady, sharp photo.',
@@ -392,6 +485,7 @@ export const SAMPLE_TEST_CASES: SampleTestCase[] = [
     title: 'Kenyan Chai (Non-Study Image)',
     subtitle: 'Content Guardrail • Polite Refusal',
     category: 'Guardrail',
+    subjectCategory: 'general',
     recommendedMode: 'explain',
     suggestedQuestion: 'Help me with this photo',
     expectedBehavior: 'Returns readable: false. Politely identifies that the image shows a cup of tea on a table rather than university study material (Rule 6). Requests the student upload notes, logic diagrams, code, or physics circuits.',

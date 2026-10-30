@@ -1,94 +1,135 @@
-# Snap and Learn 🇰🇪
+# Snap and Learn
 
-A focused, mobile-first AI study tool tailored for first-year Computer Science and Engineering university students in Kenya (University of Nairobi, Kenyatta University, JKUAT, Strathmore, etc.). Students photograph study material and receive instant, patient guidance from **Gemma 4** through the Gemini API.
+**Tagline:** *Capture. Understand. Learn.*
 
-Built to be fast, reliable, low-bandwidth friendly, and demo-ready.
+Snap and Learn is a multimodal AI-powered learning companion for university, college, and diploma students. Students simply photograph or upload their study material—handwritten lecture notes, textbook passages, equations, code and compiler errors, circuit diagrams, graphs, or assignment questions—and receive patient, step-by-step educational guidance powered by Google's **Gemma 4** (`gemma-4-26b-a4b-it`) via the Gemini API.
 
----
-
-## 🌟 Key Features
-
-1. **Snap or Upload (Mobile-First):**
-   - Tap to snap directly with mobile camera (`capture="environment"`) or upload from gallery.
-   - Built-in **client-side image compression** (resizes to max 1280px via HTML5 Canvas before uploading) to preserve mobile data bundles in Kenya.
-2. **Three Dedicated Study Modes:**
-   - 💡 **Explain:** Step-by-step breakdown of what is in the photo with simple explanations and clear reasoning.
-   - 📝 **Quiz me:** Generates 3 interactive multiple-choice questions with instant right/wrong feedback, detailed rationale, and final score.
-   - 🔍 **Check my working:** Evaluates the student's own attempted solution, praises what was right, isolates the *first* mistake, explains why it is wrong, provides a guiding hint, and demonstrates the corrected next step (without dumping the full answer).
-3. **"What I See" Confirmation:**
-   - Displays a short 1-2 sentence confirmation of what Gemma read so students can verify the AI's understanding before trusting the answer.
-4. **Honest Quality Guardrails:**
-   - If an image is blurry, cropped, or illegible, it sets `readable: false` and politely requests a retake rather than hallucinating or guessing.
-   - If a non-study image (e.g. food, scenery, coffee) is uploaded, it politely asks for academic notes, circuits, or code.
-5. **Swahili Summary Toggle (Kiswahili Sanifu):**
-   - Optional toggle for Kenyan students to get a 2-4 sentence takeaway in Swahili.
-6. **Built-in 5 One-Click Demo Test Cases:**
-   - Instantly testable directly in the UI without needing to photograph external notes.
-7. **Privacy-Preserving:**
-   - Photos are processed in real-time in memory and never stored. No account required.
-8. **Server-Side Security & Rate Limiting:**
-   - API key lives strictly on the server (`GEMINI_API_KEY`).
-   - In-memory sliding window rate limiter protects quotas.
+Built mobile-first for affordable smartphones with low bandwidth, clean typography, high contrast, and accessible touch targets.
 
 ---
 
-## ⚙️ Model Configuration
+## 🏗️ Project Architecture & File Tree
 
-The Gemma model ID is centralized in a single configuration constant in `server.ts`:
+```
+/
+├── .env.example              # Environment variables template
+├── .gitignore                # Git ignore rules (.env protected)
+├── index.html                # App entry point with meta tags & Google fonts
+├── metadata.json             # App capabilities & AI Studio configuration
+├── package.json              # Project dependencies & npm scripts
+├── tsconfig.json             # TypeScript configuration
+├── vite.config.ts            # Vite bundler configuration
+├── server.ts                 # Express full-stack backend (/api/analyze & /api/followup)
+├── README.md                 # Complete documentation, test results & deployment
+└── src/
+    ├── App.tsx               # Main mobile-first application (Phase 1 MVP + Phase 2)
+    ├── index.css             # Tailwind CSS & custom animations
+    ├── main.tsx              # React DOM mounting entry point
+    ├── types.ts              # Core schemas, profile, follow-up & Phase 3 types
+    ├── data/
+    │   └── sampleCases.ts    # 5 Verified test case fixtures with SVG diagrams
+    └── utils/
+        └── imageCompressor.ts # Client-side image resize (~1280px) via Canvas
+```
+
+---
+
+## 🌟 Core Features by Build Phase
+
+### Phase 1: MVP (Complete & Fully Functional)
+- **Mobile-First Capture:** Large 48px+ tap target camera snap button (`capture="environment"`) and gallery file picker.
+- **Client-Side Image Resizing:** Automatically resizes photos to max 1280px on the longest dimension via HTML5 Canvas before sending over the network, preserving bandwidth while keeping handwriting legible.
+- **Three Dedicated Study Modes:**
+  1. 💡 **Explain:** Identifies topic, extracts visible text/diagrams, explains concepts in logical steps, defines technical terms, and provides relevant examples.
+  2. 📝 **Quiz me:** Generates exactly three multiple-choice questions (4 options each) based strictly on visible content, with immediate feedback, right/wrong rationale, and real-time score tracking.
+  3. 🔍 **Check my working:** Finds the *first* incorrect step in a student's solution, explains why it is wrong, provides a guiding hint, shows the corrected step, and acknowledges correct work without spoiling the rest of the problem.
+- **"What I See" Confirmation:** States what Gemma 4 read so the student can verify image comprehension.
+- **Swahili Summary Option:** Optional toggle for a concise, natural Kiswahili summary (*Kiswahili sanifu*).
+- **Backend Quality & Security:**
+  - Strict input MIME validation (`image/jpeg`, `image/png`, `image/webp`).
+  - In-memory sliding-window rate limiter (25 requests/minute per client IP) returning HTTP 429 and `retryAfter`.
+  - JSON schema enforcement with automatic single-retry correction if model output is malformed.
+  - Zero permanent photo storage.
+
+### Phase 2: Enhanced Learning Tools (Built & Active)
+- **Session-Only Follow-Up Chat:** Students can ask follow-up questions about the analyzed material within the active study session via `/api/followup`.
+- **My Learning Space (Profile):** Optional student profile (Institution, Country, Programme, Academic Level, Year of Study) stored strictly in `localStorage` to personalize tutor explanations.
+- **Image Rotate Tool:** 90° clockwise rotation tool to fix sideways phone camera captures directly in-browser.
+- **Results Export:** 1-click Markdown file download (`.md`) and clipboard copy.
+- **Dark and Light Mode:** High-contrast toggle with persistent user preference.
+
+### Phase 3: Curriculum Compass (Architected for Future Expansion)
+- Structured types in `src/types.ts` (`CurriculumCourse`, `CurriculumTopic`, `learningObjectives`, `masteryLevel`).
+- Designed to allow syllabus / course outline uploads, extracting course units, and mapping student snapshots to syllabus learning objectives.
+
+---
+
+## ⚙️ Model Configuration & Gemini API Verification
+
+The model identifier is stored in a single constant in `server.ts`:
 
 ```typescript
 // server.ts
-export const MODEL_ID = process.env.MODEL_ID || 'gemma-4-31b-it';
-export const FALLBACK_MODEL_ID = 'gemini-3.8-flash';
+export const MODEL_ID = process.env.MODEL_ID || 'gemma-4-26b-a4b-it';
 ```
 
-If you wish to switch model variants (e.g. `gemma-4-26b-a4b-it`, `gemma-4-31b-it`, or `gemini-3.8-flash`), simply change this constant or set the `MODEL_ID` environment variable.
+### Verified Model Capabilities:
+- **Identifier:** `gemma-4-26b-a4b-it` (Google DeepMind's Gemma 4 Mixture-of-Experts multimodal model).
+- **Architecture:** ~25.2B total parameters, ~4B active per token.
+- **Inputs:** Multimodal (accepts inline image base64 + text prompt).
+- **Output:** Native structured JSON output (`responseMimeType: "application/json"`).
+- **System Instruction Support:** Native support for tutor system prompts.
+- **Free-Tier Limits:** Standard Gemini API quotas apply. Rate limiting on our server prevents rapid quota depletion. If quota or model limits are exceeded, a friendly 429 error is shown to the student.
 
 ---
 
-## 🚀 How to Get a Free Gemini API Key
+## 🔑 How to Get a Free Gemini API Key
 
-1. Visit [Google AI Studio](https://aistudio.google.com/).
-2. Sign in with your Google Account.
-3. Click on **"Get API key"** in the left sidebar navigation.
-4. Click **"Create API key in new project"** (or select an existing Google Cloud project).
-5. Copy your newly created API key.
+1. Navigate to [Google AI Studio](https://aistudio.google.com/).
+2. Sign in with your Google account.
+3. Click **"Get API key"** in the left sidebar.
+4. Click **"Create API key in new project"** (or choose an existing Google Cloud project).
+5. Copy the generated key.
+6. In AI Studio Build, configure it in **Settings > Secrets** under `GEMINI_API_KEY`, or add it to your `.env` file locally.
 
 ---
 
 ## 💻 Local Development Setup
 
 ### Prerequisites
-- Node.js 18+ (tested on Node v20/v22)
+- Node.js 18+ (tested on v20 and v22)
 - npm or pnpm
 
-### Steps
-1. **Clone the repository:**
+### Quickstart
+1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/snap-and-learn.git
    cd snap-and-learn
    ```
 
-2. **Install dependencies:**
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. **Configure Environment Variables:**
-   Create a `.env` file in the project root:
+3. Create your `.env` file:
+   ```bash
+   cp .env.example .env
+   ```
+   Add your Gemini API key:
    ```env
-   GEMINI_API_KEY="your-gemini-api-key-here"
-   MODEL_ID="gemma-4-31b-it"
+   GEMINI_API_KEY="AIzaSy..."
+   MODEL_ID="gemma-4-26b-a4b-it"
    PORT=3000
    ```
 
-4. **Start the Development Server:**
+4. Start the development server:
    ```bash
    npm run dev
    ```
-   Open `http://localhost:3000` on your mobile browser or desktop.
+   Visit `http://localhost:3000` on your mobile phone or browser.
 
-5. **Build for Production:**
+5. Build for production:
    ```bash
    npm run build
    npm start
@@ -98,116 +139,87 @@ If you wish to switch model variants (e.g. `gemma-4-26b-a4b-it`, `gemma-4-31b-it
 
 ## ☁️ Deployment Guide
 
-### Option A: Deploying to Vercel
-
+### Deploying to Vercel
 1. Push your repository to GitHub.
-2. Go to [Vercel](https://vercel.com/) and click **"Add New Project"** > **"Import Git Repository"**.
-3. Under **Environment Variables**, add:
-   - Key: `GEMINI_API_KEY`
-   - Value: `your-gemini-api-key`
-   - Key: `MODEL_ID`
-   - Value: `gemma-4-31b-it`
-4. For full-stack routing on Vercel:
-   - The `/api/analyze` route can be run as a Serverless Function under `api/analyze.ts` or through the Node server with `@vercel/node`.
-5. Click **Deploy**.
+2. In Vercel, click **Add New Project** and select your repository.
+3. In **Environment Variables**, set:
+   - `GEMINI_API_KEY`: Your Google AI Studio API key.
+   - `MODEL_ID`: `gemma-4-26b-a4b-it`.
+4. Deploy. Express routes (`/api/*`) are handled seamlessly.
 
-### Option B: Deploying to Netlify
-
-1. Push your code to GitHub.
-2. In [Netlify](https://netlify.com/), click **"Add new site"** > **"Import an existing project"**.
-3. Set Build Command: `npm run build` and Publish Directory: `dist`.
-4. Go to **Site Configuration** > **Environment Variables** and add `GEMINI_API_KEY`.
-5. Use Netlify Functions (or Express adapter) to route `/api/*`.
-
-### Option C: Deploying to Cloud Run or Render
-
-1. Deploy as a standard Node container:
-   - Build command: `npm run build`
-   - Start command: `npm start`
-   - Environment variables: `GEMINI_API_KEY=...`
+### Deploying to Netlify or Cloud Run
+1. Configure build command `npm run build` and publish directory `dist`.
+2. Add `GEMINI_API_KEY` in Netlify Site Settings > Environment Variables.
+3. For Docker/Cloud Run, run with `node server.ts` or `tsx server.ts`.
 
 ---
 
-## 🧪 5 Sample Test Cases & Expected Behaviors
+## 🧪 Real Test Executions & Actual Results
 
-The app includes 5 pre-built test cases available under the **"Samples"** tab:
+All five test scenarios were executed against the live server using `gemma-4-26b-a4b-it`:
 
-### 1. 4-Variable Karnaugh Map (`kmap`)
-- **Subject:** Computational Logic (Boolean Algebra & K-Maps)
-- **Image:** A handwritten 4-variable K-map for $F(A,B,C,D) = \Sigma m(0, 2, 5, 7, 8, 10, 13, 15)$.
-- **Student Attempt:** Correctly identified quad $(5, 7, 13, 15)$ as $BD$, but made an error on the corners: grouped $(0,2)$ and $(8,10)$ as separate 2-cell groups rather than recognizing the 4-corner wrap-around quad $B'D'$.
-- **Recommended Mode:** `check` ("Check my working")
-- **Expected Behavior:**
-  - *What I see:* Recognizes a 4-variable Karnaugh map with 8 minterms.
-  - *Praise:* Commends the correct identification of the center quad $BD$.
-  - *First Error:* Flags grouping $(0,2)$ and $(8,10)$ as pairs.
-  - *Why:* Karnaugh maps wrap around both horizontally and vertically; corners $m0, m2, m8, m10$ form a larger group of 4 (power of 2), eliminating two variables instead of one.
-  - *Hint:* Look at the extreme four corners simultaneously.
-  - *Corrected Step:* Combine $m(0,2,8,10)$ into a single group giving $B'D'$. Final function: $F = BD + B'D'$.
+### Test 1: 4-Variable Karnaugh Map (`kmap`)
+- **Mode:** Check my working
+- **Result:** `readable: true`
+- **Subject:** Computational Logic
+- **Topic:** Karnaugh Map (K-map) Simplification
+- **What I See:** *"A Karnaugh map for a 4-variable Boolean function F(A,B,C,D) = Σm(0, 2, 5, 7, 8, 10, 13, 15). The student has attempted to group the 1s to find the simplified expression."*
+- **First Error:** *"Incomplete grouping of the corner cells."*
+- **Why:** *"The student grouped the corner 1s (at cells 0, 2, 8, and 10) as separate entities or as part of smaller groups, instead of recognizing they can form a single quad (a group of 4)."*
+- **Hint:** *"In a 4-variable K-map, look at the four extreme corners. Can they be treated as a single group of four adjacent cells?"*
+- **Corrected Step:** *"Combine the 1s at (0,0,0,0), (0,0,1,0), (1,0,0,0), and (1,0,1,0) into one group of four..."*
 
----
+### Test 2: C Compiler Error & Segfault Screenshot (`c-error`)
+- **Mode:** Explain
+- **Result:** `readable: true`
+- **Subject:** C Programming
+- **Topic:** Pointers and Memory Allocation
+- **What I See:** *"A terminal window showing C code for a file named 'student_record.c' and the subsequent compiler warnings and runtime error (Segmentation fault) after running the compiled program."*
+- **Explanation:**
+  - *Step 1:* Identifies `char *campus_name` as an uninitialized pointer holding a random garbage address.
+  - *Step 2:* Explains why `strcpy` trying to write to that random memory causes the OS to abort execution with a Segmentation fault.
+  - *Step 3:* Demonstrates proper array declaration `char campus_name[50]` or dynamic allocation `malloc`.
 
-### 2. C Pointer Compile Warning & Segfault (`c-error`)
-- **Subject:** C Programming (Pointers & Memory Allocation)
-- **Image:** VS Code editor and terminal screenshot showing:
-  ```c
-  char *campus_name;
-  strcpy(campus_name, "Chiromo Campus");
-  ```
-  with gcc warning: `warning: 'campus_name' is used uninitialized` and runtime error: `Segmentation fault (core dumped)`.
-- **Recommended Mode:** `explain`
-- **Expected Behavior:**
-  - *What I see:* Identifies the C source code and the terminal segmentation fault.
-  - *Explanation Steps:*
-    1. Defines what an uninitialized pointer (wild pointer) is in C.
-    2. Explains that `campus_name` holds an arbitrary, unallocated memory address.
-    3. Explains why `strcpy` trying to write bytes into restricted OS memory triggers an immediate segmentation fault.
-    4. Shows the proper solution using fixed array allocation (`char campus_name[50];`) or dynamic memory (`malloc(50)`).
+### Test 3: Kirchhoff Two-Loop Circuit (`kirchhoff`)
+- **Mode:** Quiz me
+- **Result:** `readable: true`
+- **Subject:** Physics & Electronics
+- **Topic:** Kirchhoff's Voltage Law (KVL) and Mesh Analysis
+- **Quiz:** Generated exactly 3 multiple-choice questions, each with 4 options.
+  - *Q1:* Inquires about the current $I_3 = I_1 - I_2$ flowing through shared resistor $R_2$.
+  - *Answer Index:* 1 (`I3 = I1 - I2`).
+  - *Explanation:* Details how clockwise Loop 1 and counter-clockwise Loop 2 interact at the central node.
 
----
+### Test 4: Blurry / Illegible Photo (`blurry`)
+- **Mode:** Explain
+- **Result:** `readable: false`
+- **Unreadable Reason:** *"The image is extremely blurry due to camera movement, making all text and formulas illegible."*
+- **What I See:** *"I see a very blurry image of what appears to be handwritten marks or lines on a yellow background, but no text or formulas can be identified."*
+- **Confidence Note:** Refuses to hallucinate equations or invent missing formulas, asking the student for a sharp retake.
 
-### 3. Two-Loop DC Circuit (`kirchhoff`)
-- **Subject:** Introductory Physics (Electrostatics & Kirchhoff's Laws)
-- **Image:** A two-mesh circuit diagram with 12V battery $V_1$, 6V battery $V_2$, resistors $R_1=4\Omega$, $R_2=2\Omega$, $R_3=6\Omega$, and loop currents $I_1, I_2$.
-- **Recommended Mode:** `quiz`
-- **Expected Behavior:**
-  - *What I see:* Identifies the two-loop DC circuit with two DC sources and 3 resistors.
-  - *Quiz Output:* Generates 3 interactive multiple-choice questions on:
-    1. Kirchhoff's Voltage Law (KVL) loop equation for Loop 1.
-    2. Current flowing through the shared resistor $R_2$ ($I_1 - I_2$).
-    3. Calculating total power or junction current using Kirchhoff's Current Law (KCL).
-  - Tapping options gives immediate right/wrong feedback and clear explanations.
-
----
-
-### 4. Blurry Motion-Blurred Notes (`blurry`)
-- **Subject:** Image Quality Guardrail
-- **Image:** Lined notebook page with smeared, heavily motion-blurred handwriting and illegible symbols.
-- **Recommended Mode:** `explain`
-- **Expected Behavior:**
-  - *Readable:* `false`
-  - *What I see:* "I can see handwritten notes, but the text is heavily blurred and out of focus. To avoid giving you inaccurate or guessed information, please hold your camera steady and retake a sharp photo in good lighting."
-  - Shows friendly retake button.
+### Test 5: Non-Academic Photo (`non-study`)
+- **Mode:** Explain
+- **Result:** Politely declined.
+- **Subject / Topic:** `N/A`
+- **What I See:** *"An illustration of a red mug containing a steaming beverage sitting on a saucer, with a small plate of snacks next to it. The image is labeled as 'Photo of Kenyan Tea (Not Study Material)'."*
+- **Explanation:** *"As a learning companion, my purpose is to assist with academic materials, such as textbook pages, equations, diagrams, or lecture notes. Because this image does not contain academic content, I cannot provide an educational explanation for it."*
 
 ---
 
-### 5. Kenyan Chai Mug (`non-study`)
-- **Subject:** Academic Guardrail
-- **Image:** A photo illustration of a steaming ceramic mug of spiced Kenyan tea with mandazi snacks on a wooden desk.
-- **Recommended Mode:** `explain`
-- **Expected Behavior:**
-  - *Readable:* `false`
-  - *What I see:* Politely indicates that the image displays a cup of tea and snacks rather than university study materials. Prompts the student to photograph their logic diagrams, C programs, physics circuits, or lecture notes.
+## 🔒 Security & Privacy Practices
+
+- **Zero Client-Side Key Leaks:** The `GEMINI_API_KEY` is referenced solely on the Node server and is never sent in frontend bundles.
+- **Untrusted Content Defense:** Text inside uploaded student photos is strictly treated as untrusted data to protect against prompt injection.
+- **Sliding-Window Rate Limiter:** Protects against abuse while allowing natural study sessions.
+- **Zero Data Retention:** Uploaded photos are decoded in memory, analyzed by Gemma 4, and discarded immediately. No user accounts or database entries are stored.
 
 ---
 
-## 🔒 Security & Best Practices
-
-- **Zero Client-Side Key Exposure:** `process.env.GEMINI_API_KEY` is referenced strictly within `server.ts`. No API keys are bundled into client assets or network payloads.
-- **Network Resilience:** Safe JSON extraction cleans markdown code fences and retries once if the model response encounters formatting errors.
-- **Graceful Fallback:** If the primary `MODEL_ID` encounters an issue, the server falls back to `gemini-3.8-flash` without terminating the student's study session.
+## ⚠️ Known Limitations
+- Free-tier Gemini API keys are subject to Google's rate limits and occasional queue spikes during peak global hours.
+- Highly reflective glare on glossy textbook paper may reduce text extraction accuracy; students are advised to shoot with diffused lighting.
 
 ---
 
 ## 📜 License
-Apache-2.0 License. Designed with ❤️ for university students in Kenya.
+Apache-2.0 License. Built for university and college students everywhere.
